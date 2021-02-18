@@ -165,7 +165,7 @@ resource "azurerm_lb_probe" "example" {
   port                = 8080
 }
 
-resource "azurerm_virtual_machine_scale_set" "example" {
+resource "azurerm_virtual_machine_scale_set" "vmss" {
   name                = "mytestscaleset-1"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -221,8 +221,7 @@ resource "azurerm_virtual_machine_scale_set" "example" {
 
     ssh_keys {
       path     = "/home/rsadmin/.ssh/authorized_keys"
-      key_data = file("~/.ssh/id_ecdsa.pub")
-      # public_key = tls_private_key.rsadmin_ssh.public_key_openssh
+      key_data = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGD8cGtjZ5SRMC9rpQfCNMcBu8Qnq//hjN4NAPODIAPWXPiP3AcDGUtwgjt+SRN0d5BB6lSUnjlrZuaurzLt5GU="
     }
   }
 
