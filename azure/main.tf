@@ -82,7 +82,7 @@ resource "azurerm_public_ip" "pip01" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   domain_name_label = azurerm_resource_group.rg.name
-  sku                 = "Basic"
+  sku                 = "Standard"
 }
 resource "azurerm_public_ip" "pip02" {
   name                = "pubip2"
@@ -132,6 +132,7 @@ resource "azurerm_lb" "lb" {
   name                = "lb01"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  sku 		      = "Standard"
 
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
@@ -156,7 +157,7 @@ resource "azurerm_lb_nat_pool" "lbnatpool" {
   frontend_ip_configuration_name = "PublicIPAddress"
 }
 
-resource "azurerm_lb_probe" "example" {
+resource "azurerm_lb_probe" "lbprobe" {
   resource_group_name = azurerm_resource_group.rg.name
   loadbalancer_id     = azurerm_lb.lb.id
   name                = "http-probe"
@@ -165,79 +166,45 @@ resource "azurerm_lb_probe" "example" {
   port                = 8080
 }
 
-resource "azurerm_virtual_machine_scale_set" "vmss" {
+resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   name                = "mytestscaleset-1"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  instances                       = 3
+  admin_username                  = "rsadmin"
+  admin_password                  = "p@ssw0rd1234!"
+  disable_password_authentication = false
 
-  # automatic rolling upgrade
-  automatic_os_upgrade = true
-  upgrade_policy_mode  = "Rolling"
-
-  rolling_upgrade_policy {
-    max_batch_instance_percent              = 20
-    max_unhealthy_instance_percent          = 20
-    max_unhealthy_upgraded_instance_percent = 5
-    pause_time_between_batches              = "PT0S"
-  }
-
-  # required when using rolling upgrade policy
-  health_probe_id = azurerm_lb_probe.example.id
-
-  sku {
-    name     = "Standard_F2"
-    tier     = "Standard"
-    capacity = 2
-  }
-
-  storage_profile_image_reference {
+  source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "16.04-LTS"
     version   = "latest"
   }
 
-  storage_profile_os_disk {
-    name              = ""
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
-
-  storage_profile_data_disk {
-    lun           = 0
-    caching       = "ReadWrite"
-    create_option = "Empty"
-    disk_size_gb  = 10
-  }
-
-  os_profile {
-    computer_name_prefix = "testvm"
-    admin_username       = "rsadmin"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/rsadmin/.ssh/authorized_keys"
-      key_data = "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGD8cGtjZ5SRMC9rpQfCNMcBu8Qnq//hjN4NAPODIAPWXPiP3AcDGUtwgjt+SRN0d5BB6lSUnjlrZuaurzLt5GU="
-    }
-  }
-
-  network_profile {
-    name    = "terraformnetworkprofile"
+  network_interface {
+    name    = "vmssnic"
     primary = true
 
     ip_configuration {
-      name                                   = "TestIPConfiguration"
-      primary                                = true
-      subnet_id                              = azurerm_subnet.tfsubnet.id
-      load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id]
-      load_balancer_inbound_nat_rules_ids    = [azurerm_lb_nat_pool.lbnatpool.id]
+      name      = "internal"
+      primary   = true
+      subnet_id = azurerm_subnet.tfsubnet.id
     }
   }
 
+  os_disk {
+    storage_account_type = "Standard_LRS"
+    caching              = "ReadWrite"
+  }
+
+    admin_ssh_key {
+      # path     = "/home/rsadmin/.ssh/authorized_keys"
+      # key_data = tls_private_key.rsadmin_ssh.public_key_openssh
+      public_key = tls_private_key.rsadmin_ssh.public_key_openssh
+      username = "rsadmin"
+    }
+  sku = "Standard_F2"
   tags = {
     environment = "staging"
   }
