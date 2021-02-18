@@ -84,6 +84,14 @@ resource "azurerm_public_ip" "pip01" {
   domain_name_label = azurerm_resource_group.rg.name
   sku                 = "Basic"
 }
+resource "azurerm_public_ip" "pip02" {
+  name                = "pubip2"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  # domain_name_label = azurerm_resource_group..name
+  sku                 = "Basic"
+}
 
 #Create NIC
 resource "azurerm_network_interface" "nic01" {
@@ -95,7 +103,7 @@ resource "azurerm_network_interface" "nic01" {
     name                          = "ipconfig1"
     subnet_id                     = azurerm_subnet.tfsubnet.id 
     private_ip_address_allocation  = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pip01.id
+    public_ip_address_id          = azurerm_public_ip.pip02.id
   }
 }
 
