@@ -190,6 +190,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
       name      = "internal"
       primary   = true
       subnet_id = azurerm_subnet.tfsubnet.id
+      load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.bpepool.id]
+      load_balancer_inbound_nat_rules_ids    = [azurerm_lb_nat_pool.lbnatpool.id]
     }
   }
 
@@ -205,6 +207,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
       username = "rsadmin"
     }
   sku = "Standard_F2"
+
   tags = {
     environment = "staging"
   }
