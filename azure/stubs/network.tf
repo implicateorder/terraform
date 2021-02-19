@@ -1,29 +1,52 @@
-provider "azurerm" {
-    version = 1.38
-    }
-
-# Create virtual network
 resource "azurerm_virtual_network" "TFNet" {
-    name                = "tfvnet153"
-    address_space       = ["10.0.0.0/16"]
-    location            = "eastus"
-    resource_group_name = "155-bc476c54-deploy-azure-vlans-and-subnets-with-t"
+  name = var.vnet_name
+  address_space = [
+   var.vnet_address_space]
+  location = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
-    tags = {
-        environment = "Terraform Networking"
-    }
+  tags = {
+    environment = "Terraform VNET"
+  }
 }
-
 # Create subnet
 resource "azurerm_subnet" "tfsubnet" {
-    name                 = "LabSubnet"
-    resource_group_name = "155-bc476c54-deploy-azure-vlans-and-subnets-with-t"
-    virtual_network_name = azurerm_virtual_network.TFNet.name
-    address_prefix       = "10.0.1.0/24"
+  name = var.subnet_name
+  resource_group_name = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.TFNet.name
+  address_prefix = var.subnet_address_prefix
 }
-resource "azurerm_subnet" "tfsubnet2" {
-    name                 = "LabSubnet2"
-    resource_group_name = "155-bc476c54-deploy-azure-vlans-and-subnets-with-t"
-    virtual_network_name = azurerm_virtual_network.TFNet.name
-    address_prefix       = "10.0.2.0/24"
+
+#Deploy Public IP
+resource "azurerm_public_ip" "pip01" {
+  name = "pubip1"
+  location = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method = "Static"
+  domain_name_label = azurerm_resource_group.rg.name
+  sku = "Standard"
+}
+resource "azurerm_public_ip" "pip02" {
+  name = "pubip2"
+  location = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method = "Static"
+  # domain_name_label = azurerm_resource_group..name
+  sku = "Standard"
+}
+
+output "pip01id" {
+  value = azurerm_public_ip.pip01.id
+}
+
+output "pip02id" {
+  value = azurerm_public_ip.pip02.id
+}
+
+output "subnetid" {
+  value = azurerm_subnet.tfsubnet.id
+}
+
+output "vnetid" {
+  value = azurerm_virtual_network.TFNet.id
 }
