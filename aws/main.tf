@@ -1,36 +1,21 @@
 provider "aws" {
-    region = "us-east-2"
+    region = var.region
 }
-resource "aws_instance" "tfexample" {
+
+module "stubs" {
+    source = "./stubs"
     ami		  = "ami-0ebc8f6f580a04647"
     instance_type = "t2.micro"
-    vpc_security_group_ids = ["${aws_security_group.instance.id}"]
-    user_data = <<-EOF
-	  	#!/bin/bash
-		echo "Hello World!" > index.html
-		nohup busybox httpd -f -p 8080 &
-		EOF
-    tags = {
-	Name = "terraform-example"
-    }
+    instance_name = "testvm01"
+    security_group = "instaprot"
+    key_name = "sshkey2021"
+    availability_zones = ["us-east-2a"]
 }
 
-resource "aws_security_group" "instance" {
-    name = "terraform-example-instance"
-
-    ingress {
-	from_port 	= 8080
-	to_port		= 8080
-	protocol	= "tcp"
-	cidr_blocks	= ["0.0.0.0/0"]
-   } 
-   ingress {
-	from_port	= 22
-	to_port		= 22
-	protocol	= "tcp"
-	cidr_blocks	= ["0.0.0.0/0"]
-   }
-}
 output "public_ip" {
-    value = "${aws_instance.tfexample.public_ip}"
+    value = module.stubs.public_ip
+}
+
+output "ssh_private_key" {
+    value = module.stubs.ssh_private_key
 }
