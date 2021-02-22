@@ -4,3 +4,4 @@
 .secrets
 *_secrets
 terraform.tf
+control/*
