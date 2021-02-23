@@ -7,6 +7,8 @@ variable "availability_zones" {
   type = list(string)
   default = []
 }
+variable "server_port" {}
+variable "elb_port" {}
 /*
 variable "vpc_name" {}
 variable "vpc_cidr_block" {}

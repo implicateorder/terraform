@@ -10,6 +10,8 @@ module "stubs" {
     security_group = "instaprot"
     key_name = "sshkey2021"
     availability_zones = ["us-east-2a"]
+    server_port = 80
+    elb_port = 8080
 }
 
 output "public_ip" {
