@@ -36,3 +36,7 @@ module "stubs" {
 #  backend_address_pool_id = azurerm_lb_backend_address_pool.bpepool.id
 # network_interface_id = azurerm_linux_virtual_machine_scale_set.vmss.network_interface
 # }
+
+output "ssh_private_key" {
+  value = module.stubs.ssh_private_key
+}

@@ -28,6 +28,16 @@ resource "azurerm_lb_nat_pool" "lbnatpool" {
   frontend_ip_configuration_name = "PublicIPAddress"
 }
 
+resource "azurerm_lb_rule" "http" {
+  resource_group_name            = azurerm_resource_group.rg.name
+  loadbalancer_id                = azurerm_lb.lb.id
+  name                           = "LBRule"
+  protocol                       = "Tcp"
+  frontend_port                  = 8080
+  backend_port                   = 80
+  frontend_ip_configuration_name = "PublicIPAddress"
+}
+
 resource "azurerm_lb_probe" "lbprobe" {
   resource_group_name = azurerm_resource_group.rg.name
   loadbalancer_id = azurerm_lb.lb.id

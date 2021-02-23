@@ -21,16 +21,24 @@ output "tls_private_key" {
   value = tls_private_key.rsadmin_ssh.private_key_pem
 }
 
+/*
+data "templatefile" "install_apache" {
+  template = "${file("${path.module}/install_apache.sh")}"
+}
 
+*/
 
 resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   name = "mytestscaleset-1"
   location = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   instances = 3
+
   admin_username = "rsadmin"
   admin_password = "p@ssw0rd1234!"
   disable_password_authentication = false
+
+  custom_data = base64encode(file("${path.module}/install_apache.sh"))
 
   source_image_reference {
     publisher = "Canonical"
