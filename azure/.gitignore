@@ -2,6 +2,7 @@
 *.tfstate
 .terraform.*
 *.tfstate.*
+terraform.tfstate.backup
 *.tfstate.backup
 .secrets
 *_secrets
