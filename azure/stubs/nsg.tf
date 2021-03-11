@@ -46,7 +46,7 @@ resource "azurerm_network_security_rule" "allow_ib_ssh" {
   network_security_group_name = azurerm_network_security_group.nsg.name
 }
 
-resource "azurerm_network_security_rule" "allow_ob_http" {
+/*resource "azurerm_network_security_rule" "allow_ob_http" {
   name = "Web80Out"
   priority = 1000
   direction = "Outbound"
@@ -58,4 +58,4 @@ resource "azurerm_network_security_rule" "allow_ob_http" {
   destination_address_prefix = "*"
   resource_group_name = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg.name
-}
+}*/

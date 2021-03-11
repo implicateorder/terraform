@@ -1,6 +1,9 @@
 .terraform
 *.tfstate
+.terraform.*
+*.tfstate.*
 *.tfstate.backup
 .secrets
 *_secrets
-*.hcl
+.idea
+.idea/*

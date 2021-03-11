@@ -5,8 +5,13 @@ resource "azurerm_lb" "lb" {
   sku = "Standard"
 
   frontend_ip_configuration {
-    name = "PublicIPAddress"
+    name = "PublicIPAddress1"
     public_ip_address_id = azurerm_public_ip.pip02.id
+  }
+
+  frontend_ip_configuration {
+    name = "PublicIpAddress2"
+    public_ip_address_id = azurerm_public_ip.pip03.id
   }
 }
 
@@ -25,7 +30,7 @@ resource "azurerm_lb_nat_pool" "lbnatpool" {
   frontend_port_start = 50000
   frontend_port_end = 50119
   backend_port = 22
-  frontend_ip_configuration_name = "PublicIPAddress"
+  frontend_ip_configuration_name = "PublicIPAddress1"
 }
 
 resource "azurerm_lb_rule" "http" {
@@ -45,5 +50,17 @@ resource "azurerm_lb_probe" "lbprobe" {
   protocol = "Http"
   request_path = "/health"
   port = 8080
+}
+
+resource "azurerm_lb_outbound_rule" "lbout" {
+  resource_group_name = azurerm_resource_group.rg.name
+  loadbalancer_id = azurerm_lb.lb.id
+  name = "outboundRule"
+  protocol = "All"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.bpepool.id
+
+  frontend_ip_configuration {
+    name = "PublicIPAddress2"
+  }
 }
 

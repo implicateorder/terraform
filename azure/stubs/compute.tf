@@ -43,7 +43,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   source_image_reference {
     publisher = "Canonical"
     offer = "UbuntuServer"
-    sku = "16.04-LTS"
+    sku = "18.04-LTS"
     version = "latest"
   }
 
@@ -78,6 +78,18 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   tags = {
     environment = "staging"
   }
+}
+
+resource "azurerm_virtual_machine_scale_set_extension" "vmss" {
+  name                         = "vmss"
+  virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+  publisher                    = "Microsoft.Azure.Extensions"
+  type                         = "CustomScript"
+  type_handler_version         = "2.0"
+  settings = jsonencode({
+      "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx.sh"],
+      "commandToExecute": "./automate_nginx.sh"
+  })
 }
 
 #Create Virtual Machine
