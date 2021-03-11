@@ -30,12 +30,6 @@ module "stubs" {
   resource_group_location = "Central US"
 }
 
-# resource "azurerm_network_interface_backend_address_pool_association" "bepoolassoc" {
-# network_interface_name = azurerm_linux_virtual_machine_scale_set.vmss.network_interface.name
-#   ip_configuration_name   = azurerm_linux_virtual_machine_scale_set.vmss.name
-#  backend_address_pool_id = azurerm_lb_backend_address_pool.bpepool.id
-# network_interface_id = azurerm_linux_virtual_machine_scale_set.vmss.network_interface
-# }
 
 output "ssh_private_key" {
   value = module.stubs.ssh_private_key
