@@ -35,7 +35,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   instances = 3
 
   admin_username = "rsadmin"
-  admin_password = "p@ssw0rd1234!"
+  admin_password = var.admin_password
   disable_password_authentication = false
 
   custom_data = base64encode(file("${path.module}/install_apache.sh"))
