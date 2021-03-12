@@ -3,6 +3,7 @@
 .terraform.*
 *.tfstate.*
 terraform.tfstate.backup
+.terraform.lock.hcl
 *.tfstate.backup
 .secrets
 *_secrets
