@@ -9,6 +9,7 @@ variable "availability_zones" {
 }
 variable "server_port" {}
 variable "elb_port" {}
+
 /*
 variable "vpc_name" {}
 variable "vpc_cidr_block" {}

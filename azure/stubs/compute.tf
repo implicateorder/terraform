@@ -123,7 +123,7 @@ resource "azurerm_virtual_machine" "vm01" {
   os_profile {
     computer_name = "vm01"
     admin_username = "rsadmin"
-    admin_password = "p@$$w0rd123"
+    admin_password = var.admin_password
     # disable_password_authentication = true
   }
 

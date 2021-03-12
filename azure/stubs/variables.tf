@@ -13,3 +13,4 @@ variable "lb_name" {}
 variable "nsg_name" {}
 variable "resource_group_name" {}
 variable "resource_group_location" {}
+variable "admin_password" {}
